@@ -1,6 +1,6 @@
 from math import sqrt
 from matplotlib import collections
-import numpy as np
+from numpy import argmin, array
 import matplotlib.pyplot as plt
 
 LEN_GRAPH = 35
@@ -10,6 +10,7 @@ class Node:
     def __init__ (self, ID, Coordinate):
         self.Coordinate = Coordinate
         self.ID = ID
+        self.IsVisited = False
 
 #Edges are used for visualization only
 class Edge:
@@ -217,7 +218,7 @@ def a_star():
     while open_set:
         
         #Find the index of the current node from the open set
-        node_current_id = open_set[np.argmin(np.array(\
+        node_current_id = open_set[argmin(array(\
         [nodes[open_set[i]].Cost + nodes[open_set[i]].HeuristicCost\
         for i in range(len(open_set))]))]
         
@@ -230,8 +231,8 @@ def a_star():
                     path.append(node_current_id)
                     node_current_id = nodes[node_current_id].Origin
                 except AttributeError:
-                    return path
-        
+                    return nodes, path
+        nodes[node_current_id].IsVisited = True
         closed_set.append(node_current_id)
         del open_set[open_set.index(node_current_id)]
         
@@ -285,15 +286,14 @@ def print_path():
         ax.fill([coordinates[i][0] for i in range(len(coordinates))], 
                 [coordinates[i][1] for i in range(len(coordinates))], 
                 'g')
-            
+       
     for edge in edges:
         line_segs.append([edge.StartNode.Coordinate, edge.EndNode.Coordinate])
         colors.append('b')
         linewidth.append(1)
-
-    nodes = generate_all_nodes(sparse = True)
-    path = a_star()
-
+    
+    nodes, path = a_star()
+    
     for i in range(1, len(path)):
         line_segs.append((nodes[path[i]].Coordinate, nodes[path[i - 1]].Coordinate))
         colors.append('r')
@@ -304,6 +304,16 @@ def print_path():
         colors = colors, 
         linewidth = linewidth)
     ax.add_collection(line_segs)
+    coordinates_x = []
+    coordinates_y = []
+    for node in nodes:
+        if node is not 0:
+            if node.IsVisited:
+                coordinates_x.append(node.Coordinate[0])
+                coordinates_y.append(node.Coordinate[1])
+    
+    ax.plot(coordinates_x, coordinates_y, 'r.')
+    
     ax.autoscale()
     fig.show()
     
