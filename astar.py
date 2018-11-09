@@ -163,15 +163,6 @@ def visualize_edges(edges):
     
 def calculate_euclidean_distance(c1, c2):
     return sqrt((c1[0] -  c2[0])**2 + (c1[1] - c2[1])**2)
-    
-def construct_graph():
-    
-    edges = generate_all_edges()
-    graph = Graph()
-        
-    graph.ConnectivityGraph = generate_graph_dict()
-        
-    return graph
 
 #Please refactor in future if I ever decide to improve upon project - runs O(n^2)
 '''Generate a dictionary of all node IDs followed by their neighboring nodes'''
