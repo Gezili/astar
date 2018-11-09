@@ -10,11 +10,8 @@ class Node:
     def __init__ (self, ID, Coordinate):
         self.Coordinate = Coordinate
         self.ID = ID
-        self.Neighbors = []
-        
-    def add_neighbor(self, Neighbor):
-        self.Neighbors.append(Neighbor)
-        
+
+#Edges are used for visualization only
 class Edge:
     
     def __init__(self, StartNode, EndNode):
@@ -23,11 +20,8 @@ class Edge:
 
 class Graph:
     
-    def __init__(self, Edges):
-        self.Edges = Edges
-        
-    def add_edge(self, Edge):
-        self.Edges.append(Edge)
+    def __init__(self):
+        pass
 
 class Shape:
     
@@ -178,9 +172,7 @@ def calculate_euclidean_distance(c1, c2):
 def construct_graph():
     
     edges = generate_all_edges()
-    graph = Graph([])
-    for edge in edges:
-        graph.add_edge(edge)
+    graph = Graph()
         
     graph.ConnectivityGraph = generate_graph_dict()
         
