@@ -383,8 +383,15 @@ if __name__ == '__main__':
     s7.add_point((10, 8))
     s7.add_point((6, 8))
     
+    s8 = Shape()
+    s8.add_point((12, 25))
+    s8.add_point((28, 28))
     
-    shapes = [s1, s2, s3, s4, s5, s6, s7]
+    s9 = Shape()
+    s9.add_point((25, 22))
+    s9.add_point((28, 25))
+    
+    shapes = [s1, s2, s3, s4, s5, s6, s7, s8, s9]
     
     #Generate the graph
     
