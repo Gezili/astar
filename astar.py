@@ -67,21 +67,18 @@ def inside_polygon(polygon, point):
         
         b = y_1 - m*x_1
         
-        if min(y_1, y_3) - epsilon >= point[1] or max(y_1, y_3) + epsilon <= point[1]:
+        if min(y_1, y_3) - epsilon >= point[1] \
+        or max(y_1, y_3) + epsilon <= point[1]\
+        or min(x_1, x_3) - epsilon >= point[0]\
+        or max(x_1, x_3) + epsilon <= point[0]:
             return False
         
         if min(y_1, y_3) == y_mid and y_mid < m*x_mid + b:
-            
-            if min(y_1, y_3) <= point[1] <= max(y_1, y_3)\
-            and point[1] - epsilon <= m*point[0] + b\
-            and min(x_1, x_3) <= point[0] <= max(x_1, x_3):
+            if point[1] - epsilon <= m*point[0] + b:
                 return True
             return False
         elif max(y_1, y_3) == y_mid and y_mid > m*x_mid + b:
-            
-            if min(y_1, y_3) <= point[1] <= max(y_1, y_3)\
-            and point[1] + epsilon >= m*point[0] + b\
-            and min(x_1, x_3) <= point[0] <= max(x_1, x_3):
+            if point[1] + epsilon >= m*point[0] + b:
                 return True
             return False
 
@@ -310,6 +307,7 @@ def a_star():
 def print_path():
     
     edges = generate_all_edges()
+    fig, ax = plt.subplots()
     
     line_segs = []
     colors = []
@@ -325,11 +323,10 @@ def print_path():
             ]
         else:
             coordinates = shape.Coordinates
-        for i in range(len(coordinates)):
             
-            line_segs.append([coordinates[i], coordinates[(i + 1) % len(coordinates)]])
-            colors.append('g')
-            linewidth.append(2)
+        ax.fill([coordinates[i][0] for i in range(len(coordinates))], 
+                [coordinates[i][1] for i in range(len(coordinates))], 
+                'g')
             
     for edge in edges:
         line_segs.append([edge.StartNode.Coordinate, edge.EndNode.Coordinate])
@@ -344,8 +341,10 @@ def print_path():
         colors.append('r')
         linewidth.append(5)
 
-    line_segs = collections.LineCollection(line_segs, colors = colors, linewidth = linewidth)
-    fig, ax = plt.subplots()
+    line_segs = collections.LineCollection(
+        line_segs, 
+        colors = colors, 
+        linewidth = linewidth)
     ax.add_collection(line_segs)
     ax.autoscale()
     fig.show()
