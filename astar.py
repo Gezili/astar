@@ -1,5 +1,3 @@
-from shapely.geometry import Point
-from shapely.geometry.polygon import Polygon
 from math import sqrt
 from matplotlib import collections
 import numpy as np
@@ -39,13 +37,46 @@ class Shape:
     def add_point(self, Coordinate):
         self.Coordinates.append(Coordinate)
         
-'''Determine if a node is within a polygon'''
-        
+'''Determine if a node is within a polygon
+A lot of simplifications can be made if the shape
+is a rectangle or a right triangle with x, y axes aligned
+with 2 of the sides'''
+
+
 def inside_polygon(polygon, point):
+    #Square
+
+    if len(polygon) == 2:
+        x_min, y_min = polygon[0][0], polygon[0][1]
+        x_max, y_max = polygon[1][0], polygon[1][1]
+        
+        if x_min <= point[0] <= x_max and y_min <= point[1] <= y_max:
+            return True
+        return False
     
-    polygon = Polygon(polygon)
-    point = Point(point)
-    return polygon.covers(point)
+    #Triangle   
+    if len(polygon) == 3:
+        
+        positive = -1
+        
+        x_1, y_1 = polygon[0][0], polygon[0][1]
+        x_mid, y_mid = polygon[1][0], polygon[1][1]
+        x_3, y_3 = polygon[2][0], polygon[2][1]
+        
+        m = (y_3 - y_1)/(x_3 - x_1)
+        
+        b = y_1 - m*x_1
+        
+        if y_mid < m*x_mid + b:
+            positive = 1
+        
+        if min(y_1, y_3) - 0.00001 >= point[1] or max(y_1, y_3) + 0.00001 <= point[1]:
+            return False
+        elif min(x_1, x_3) <= point[0] <= max(x_1, x_3)\
+        and point[1] - 0.00001 <= positive*(m*point[0] + b)\
+        and min(x_1, x_3) <= point[0] <= max(x_1, x_3):
+            return True
+        return False
 
 def inside_region(node):
     
@@ -167,11 +198,11 @@ def generate_graph_dict():
             node_orig.ID + 1, #north
             node_orig.ID + LEN_GRAPH, #east
             node_orig.ID + LEN_GRAPH + 1, #northeast
-            node_orig.ID + LEN_GRAPH - 1, #southeast
-            node_orig.ID - 1,
-            node_orig.ID - LEN_GRAPH,
-            node_orig.ID - LEN_GRAPH + 1,
-            node_orig.ID - LEN_GRAPH - 1
+            node_orig.ID + LEN_GRAPH - 1, #southeast 
+            node_orig.ID - 1, #south
+            node_orig.ID - LEN_GRAPH, #west
+            node_orig.ID - LEN_GRAPH + 1, #northwest
+            node_orig.ID - LEN_GRAPH - 1 #southwest
         ]
         
         for i, node_dest in enumerate (check_nodes):
@@ -303,49 +334,29 @@ def print_path():
     ax.autoscale()
     fig.show()
     
-    
 if __name__ == '__main__':
     #Declare all the shapes
     
-    s1 = Shape()
-    s1.add_point((6, 10))
-    s1.add_point((12, 10))
-    s1.add_point((12, 4))
-    s1.add_point((10, 4))
-    s1.add_point((6, 8))
     
     s2 = Shape()
     s2.add_point((9, 16))
-    s2.add_point((9, 20))
     s2.add_point((12, 20))
-    s2.add_point((12, 16))
     
     s3 = Shape()
-    s3.add_point((17, 15))
-    s3.add_point((17, 11))
     s3.add_point((14, 11))
-    s3.add_point((14, 15))
+    s3.add_point((17, 15))
     
     s4 = Shape()
-    s4.add_point((20, 6))
     s4.add_point((28, 19))
     s4.add_point((28, 6))
+    s4.add_point((20, 6))
     
     s5 = Shape()
     s5.add_point((18, 16))
-    s5.add_point((18, 19))
     s5.add_point((24, 19))
-    s5.add_point((24, 16))
     
-    s6 = Shape()
-    s6.add_point((28, 22))
-    s6.add_point((25, 22))
-    s6.add_point((25, 25))
-    s6.add_point((12, 25))
-    s6.add_point((12, 28))
-    s6.add_point((28, 28))
     
-    shapes = [s1, s2, s3, s4, s5, s6]
+    shapes = [s2, s3, s4, s5]
     
     #Generate the graph
     
