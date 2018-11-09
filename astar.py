@@ -57,7 +57,7 @@ def inside_polygon(polygon, point):
     #Triangle   
     if len(polygon) == 3:
         
-        positive = -1
+        epsilon = 0.00001
         
         x_1, y_1 = polygon[0][0], polygon[0][1]
         x_mid, y_mid = polygon[1][0], polygon[1][1]
@@ -67,16 +67,23 @@ def inside_polygon(polygon, point):
         
         b = y_1 - m*x_1
         
-        if y_mid < m*x_mid + b:
-            positive = 1
-        
-        if min(y_1, y_3) - 0.00001 >= point[1] or max(y_1, y_3) + 0.00001 <= point[1]:
+        if min(y_1, y_3) - epsilon >= point[1] or max(y_1, y_3) + epsilon <= point[1]:
             return False
-        elif min(x_1, x_3) <= point[0] <= max(x_1, x_3)\
-        and point[1] - 0.00001 <= positive*(m*point[0] + b)\
-        and min(x_1, x_3) <= point[0] <= max(x_1, x_3):
-            return True
-        return False
+        
+        if min(y_1, y_3) == y_mid and y_mid < m*x_mid + b:
+            
+            if min(y_1, y_3) <= point[1] <= max(y_1, y_3)\
+            and point[1] - epsilon <= m*point[0] + b\
+            and min(x_1, x_3) <= point[0] <= max(x_1, x_3):
+                return True
+            return False
+        elif max(y_1, y_3) == y_mid and y_mid > m*x_mid + b:
+            
+            if min(y_1, y_3) <= point[1] <= max(y_1, y_3)\
+            and point[1] + epsilon >= m*point[0] + b\
+            and min(x_1, x_3) <= point[0] <= max(x_1, x_3):
+                return True
+            return False
 
 def inside_region(node):
     
@@ -309,9 +316,18 @@ def print_path():
     linewidth = []
     
     for shape in shapes:
-        for i in range(len(shape.Coordinates)):
-           
-            line_segs.append([shape.Coordinates[i], shape.Coordinates[(i + 1) % len(shape.Coordinates)]])
+        if len(shape.Coordinates) == 2:
+            coordinates = [
+                (shape.Coordinates[0][0], shape.Coordinates[0][1]),
+                (shape.Coordinates[0][0], shape.Coordinates[1][1]),
+                (shape.Coordinates[1][0], shape.Coordinates[1][1]),
+                (shape.Coordinates[1][0], shape.Coordinates[0][1])
+            ]
+        else:
+            coordinates = shape.Coordinates
+        for i in range(len(coordinates)):
+            
+            line_segs.append([coordinates[i], coordinates[(i + 1) % len(coordinates)]])
             colors.append('g')
             linewidth.append(2)
             
@@ -337,6 +353,9 @@ def print_path():
 if __name__ == '__main__':
     #Declare all the shapes
     
+    s1 = Shape()
+    s1.add_point((6, 8))
+    s1.add_point((12, 10))
     
     s2 = Shape()
     s2.add_point((9, 16))
@@ -355,8 +374,17 @@ if __name__ == '__main__':
     s5.add_point((18, 16))
     s5.add_point((24, 19))
     
+    s6 = Shape()
+    s6.add_point((10, 4))
+    s6.add_point((12, 8))
     
-    shapes = [s2, s3, s4, s5]
+    s7 = Shape()
+    s7.add_point((10, 4))
+    s7.add_point((10, 8))
+    s7.add_point((6, 8))
+    
+    
+    shapes = [s1, s2, s3, s4, s5, s6, s7]
     
     #Generate the graph
     
