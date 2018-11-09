@@ -140,26 +140,6 @@ def generate_all_edges(return_nodes = False):
                     edges.append(edge)
             
     return edges
-        
-def visualize_nodes(nodes):
-    
-    node_x = [node.Coordinate[0] for node in nodes]
-    node_y = [node.Coordinate[1] for node in nodes]
-    plt.plot(node_x, node_y, 'ro')
-    plt.show()
-    
-def visualize_edges(edges):
-    
-    line_segs = []
-
-    for edge in edges:
-        line_segs.append([edge.StartNode.Coordinate, edge.EndNode.Coordinate])
-
-    line_segs = collections.LineCollection(line_segs)
-    fig, ax = plt.subplots()
-    ax.add_collection(line_segs)
-    ax.autoscale()
-    fig.show()
     
 def calculate_euclidean_distance(c1, c2):
     return sqrt((c1[0] -  c2[0])**2 + (c1[1] - c2[1])**2)
