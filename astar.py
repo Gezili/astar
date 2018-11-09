@@ -18,11 +18,6 @@ class Edge:
         self.StartNode = StartNode
         self.EndNode = EndNode
 
-class Graph:
-    
-    def __init__(self):
-        pass
-
 class Shape:
     
     def __init__ (self):
@@ -221,7 +216,7 @@ def generate_graph_dict():
     
 def a_star():
     
-    graph = construct_graph()
+    graph = generate_graph_dict()
     closed_set = []
     open_set = []
     
@@ -269,7 +264,7 @@ def a_star():
         closed_set.append(node_current_id)
         del open_set[open_set.index(node_current_id)]
         
-        node_list = graph.ConnectivityGraph[node_current_id]
+        node_list = graph[node_current_id]
         
         #Node has been visited - let's move on
         for node_id in node_list:
