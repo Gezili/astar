@@ -36,7 +36,7 @@ with 2 of the sides'''
 def inside_polygon(polygon, point):
     #Square
 
-    if len(polygon) == 2:
+    if len(polygon) is 2:
         x_min, y_min = polygon[0][0], polygon[0][1]
         x_max, y_max = polygon[1][0], polygon[1][1]
         
@@ -45,7 +45,7 @@ def inside_polygon(polygon, point):
         return False
     
     #Triangle   
-    if len(polygon) == 3:
+    elif len(polygon) is 3:
         
         epsilon = 0.00001
         
@@ -57,17 +57,17 @@ def inside_polygon(polygon, point):
         
         b = y_1 - m*x_1
         
-        if min(y_1, y_3) - epsilon >= point[1] \
+        if min(y_1, y_3) - epsilon >= point[1]\
         or max(y_1, y_3) + epsilon <= point[1]\
         or min(x_1, x_3) - epsilon >= point[0]\
         or max(x_1, x_3) + epsilon <= point[0]:
             return False
         
-        if min(y_1, y_3) == y_mid and y_mid < m*x_mid + b:
+        if min(y_1, y_3) is y_mid and y_mid < m*x_mid + b:
             if point[1] - epsilon <= m*point[0] + b:
                 return True
             return False
-        elif max(y_1, y_3) == y_mid and y_mid > m*x_mid + b:
+        elif max(y_1, y_3) is y_mid and y_mid > m*x_mid + b:
             if point[1] + epsilon >= m*point[0] + b:
                 return True
             return False
@@ -168,7 +168,7 @@ def generate_graph_dict():
             node_orig.ID - LEN_GRAPH - 1 #southwest
         ]
         
-        for i, node_dest in enumerate (check_nodes):
+        for i, node_dest in enumerate(check_nodes):
             if node_dest in node_ids:
                 
                 node_dest = nodes[node_ids.index(node_dest)]
@@ -304,14 +304,11 @@ def print_path():
         colors = colors, 
         linewidth = linewidth)
     ax.add_collection(line_segs)
-    coordinates_x = []
-    coordinates_y = []
-    for node in nodes:
-        if node is not 0:
-            if node.IsVisited:
-                coordinates_x.append(node.Coordinate[0])
-                coordinates_y.append(node.Coordinate[1])
     
+    coordinates_x, coordinates_y =\
+    [node.Coordinate[0] for node in nodes if node is not 0],\
+    [node.Coordinate[1] for node in nodes if node is not 0]
+
     ax.plot(coordinates_x, coordinates_y, 'r.')
     
     ax.autoscale()
