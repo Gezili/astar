@@ -32,7 +32,6 @@ A lot of simplifications can be made if the shape
 is a rectangle or a right triangle with x, y axes aligned
 with 2 of the sides'''
 
-
 def inside_polygon(polygon, point):
     #Square
 
@@ -306,8 +305,8 @@ def print_path():
     ax.add_collection(line_segs)
     
     coordinates_x, coordinates_y =\
-    [node.Coordinate[0] for node in nodes if node is not 0],\
-    [node.Coordinate[1] for node in nodes if node is not 0]
+    [node.Coordinate[0] for node in nodes if node is not 0 and node.IsVisited],\
+    [node.Coordinate[1] for node in nodes if node is not 0 and node.IsVisited]
 
     ax.plot(coordinates_x, coordinates_y, 'r.')
     
